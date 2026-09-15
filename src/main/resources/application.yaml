@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: StaySync
+
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hotel_management
+    username: postgres
+    password: Ezhil@123
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+server:
+  port: 8080
