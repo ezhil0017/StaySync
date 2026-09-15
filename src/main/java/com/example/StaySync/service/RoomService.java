@@ -67,4 +67,8 @@ public class RoomService {
         return roomRepository.save(room);
 
     }
+    public void deleteRoom(Long id){
+        Room room=roomRepository.findById(id).orElseThrow(()->new RuntimeException("Room Not Found"));
+        roomRepository.delete(room);
+    }
 }
