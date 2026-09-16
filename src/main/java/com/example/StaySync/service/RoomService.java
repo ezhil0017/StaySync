@@ -29,15 +29,20 @@ public class RoomService {
         this.roomTypeRepository=roomTypeRepository;
     }
 
-    public List<Room> getAllRooms(){
-        return roomRepository.findAll();
+    public List<RoomResponse> getAllRooms() {
+        List<Room> rooms = roomRepository.findAll();
+        return rooms.stream()
+                .map(this::toRoomResponse)
+                .toList();
     }
+    public RoomResponse getRoomById(Long id) {
 
-    public Optional<Room> getRoomById(Long id){
-        return roomRepository.findById(id);
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+
+        return toRoomResponse(room);
     }
-
-    public Room createRoom(RoomCreateRequest request) {
+    public RoomResponse createRoom(RoomCreateRequest request) {
         Hotel hotel=hotelRepository.findById(request.getHotelId()).orElseThrow(()->new RuntimeException("Hotel Not Found"));
         RoomType roomType=roomTypeRepository.findById(request.getRoomTypeId()).orElseThrow(()->new RuntimeException("RoomType Not Found"));
         Room room=new Room();
@@ -50,10 +55,11 @@ public class RoomService {
         OffsetDateTime now=OffsetDateTime.now();
         room.setCreatedAt(now);
         room.setUpdatedAt(now);
-        return roomRepository.save(room);
+        Room savedRoom=roomRepository.save(room);
+        return toRoomResponse(savedRoom);
     }
 
-    public Room updateRoom(Long id,RoomCreateRequest request){
+    public RoomResponse updateRoom(Long id,RoomCreateRequest request){
         Room room=roomRepository.findById(id).orElseThrow(()->new RuntimeException("Room Not Found"));
         Hotel hotel=hotelRepository.findById(request.getHotelId()).orElseThrow(()->new RuntimeException("Hotel Not Found"));
         RoomType roomType=roomTypeRepository.findById(request.getRoomTypeId()).orElseThrow(()->new RuntimeException("RoomType Not Found"));
@@ -65,8 +71,8 @@ public class RoomService {
         room.setFloor(request.getFloor());
         room.setRoomType(roomType);
         room.setUpdatedAt(now);
-        return roomRepository.save(room);
-
+        Room updatedRoom= roomRepository.save(room);
+        return toRoomResponse(updatedRoom);
     }
     public void deleteRoom(Long id){
         Room room=roomRepository.findById(id).orElseThrow(()->new RuntimeException("Room Not Found"));

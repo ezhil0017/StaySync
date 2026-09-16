@@ -1,6 +1,7 @@
 package com.example.StaySync.controller;
 
 import com.example.StaySync.dto.RoomCreateRequest;
+import com.example.StaySync.dto.RoomResponse;
 import com.example.StaySync.entity.Room;
 import com.example.StaySync.service.RoomService;
 import org.springframework.web.bind.annotation.*;
@@ -20,22 +21,22 @@ public class RoomController {
     }
 
 @GetMapping
-    public List<Room> getAllRooms(){
+    public List<RoomResponse> getAllRooms(){
         return roomService.getAllRooms();
 }
 
 @GetMapping("/{id}")
-    public Optional<Room> getRoomById(@PathVariable Long id){
+    public RoomResponse getRoomById(@PathVariable Long id){
         return roomService.getRoomById(id);
 }
 
 @PostMapping
-    public Room createRoom(@RequestBody RoomCreateRequest request){
+    public RoomResponse createRoom(@RequestBody RoomCreateRequest request){
         return roomService.createRoom(request);
 }
 
 @PutMapping("/{id}")
-    public Room updateRoom(@RequestBody RoomCreateRequest request,@PathVariable Long id) {
+    public RoomResponse updateRoom(@RequestBody RoomCreateRequest request,@PathVariable Long id) {
         return roomService.updateRoom(id,request);
 }
 @DeleteMapping("/{id}")
