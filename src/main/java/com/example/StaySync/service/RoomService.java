@@ -1,6 +1,7 @@
 package com.example.StaySync.service;
 
 import com.example.StaySync.dto.RoomCreateRequest;
+import com.example.StaySync.dto.RoomResponse;
 import com.example.StaySync.entity.Hotel;
 import com.example.StaySync.entity.Room;
 import com.example.StaySync.entity.RoomType;
@@ -70,5 +71,19 @@ public class RoomService {
     public void deleteRoom(Long id){
         Room room=roomRepository.findById(id).orElseThrow(()->new RuntimeException("Room Not Found"));
         roomRepository.delete(room);
+    }
+
+    private RoomResponse toRoomResponse(Room room) {
+
+        RoomResponse response = new RoomResponse();
+
+        response.setRoomId(room.getRoomId());
+        response.setHotelId(room.getHotel().getHotelId());
+        response.setRoomTypeId(room.getRoomType().getRoomTypeId());
+        response.setRoomNumber(room.getRoomNumber());
+        response.setFloor(room.getFloor());
+        response.setStatus(room.getStatus());
+
+        return response;
     }
 }
