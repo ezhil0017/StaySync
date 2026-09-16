@@ -132,4 +132,6 @@ public class Room {
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
     }
+
+
 }
