@@ -4,6 +4,7 @@ import com.example.StaySync.dto.RoomCreateRequest;
 import com.example.StaySync.dto.RoomResponse;
 import com.example.StaySync.entity.Room;
 import com.example.StaySync.service.RoomService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,12 +32,12 @@ public class RoomController {
 }
 
 @PostMapping
-    public RoomResponse createRoom(@RequestBody RoomCreateRequest request){
+    public RoomResponse createRoom(@Valid @RequestBody RoomCreateRequest request){
         return roomService.createRoom(request);
 }
 
 @PutMapping("/{id}")
-    public RoomResponse updateRoom(@RequestBody RoomCreateRequest request,@PathVariable Long id) {
+    public RoomResponse updateRoom(@Valid @RequestBody RoomCreateRequest request,@PathVariable Long id) {
         return roomService.updateRoom(id,request);
 }
 @DeleteMapping("/{id}")
