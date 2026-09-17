@@ -2,13 +2,11 @@ package com.example.StaySync.controller;
 
 import com.example.StaySync.dto.RoomCreateRequest;
 import com.example.StaySync.dto.RoomResponse;
-import com.example.StaySync.entity.Room;
 import com.example.StaySync.service.RoomService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/rooms")

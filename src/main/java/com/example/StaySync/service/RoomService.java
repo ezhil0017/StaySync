@@ -5,6 +5,7 @@ import com.example.StaySync.dto.RoomResponse;
 import com.example.StaySync.entity.Hotel;
 import com.example.StaySync.entity.Room;
 import com.example.StaySync.entity.RoomType;
+import com.example.StaySync.exception.ResourceNotFoundException;
 import com.example.StaySync.repository.HotelRepository;
 import com.example.StaySync.repository.RoomRepository;
 import com.example.StaySync.repository.RoomTypeRepository;
@@ -38,13 +39,13 @@ public class RoomService {
     public RoomResponse getRoomById(Long id) {
 
         Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
 
         return toRoomResponse(room);
     }
     public RoomResponse createRoom(RoomCreateRequest request) {
-        Hotel hotel=hotelRepository.findById(request.getHotelId()).orElseThrow(()->new RuntimeException("Hotel Not Found"));
-        RoomType roomType=roomTypeRepository.findById(request.getRoomTypeId()).orElseThrow(()->new RuntimeException("RoomType Not Found"));
+        Hotel hotel=hotelRepository.findById(request.getHotelId()).orElseThrow(()->new ResourceNotFoundException("Hotel Not Found"));
+        RoomType roomType=roomTypeRepository.findById(request.getRoomTypeId()).orElseThrow(()->new ResourceNotFoundException("RoomType Not Found"));
         Room room=new Room();
         room.setHotel(hotel);
         room.setRoomNumber(request.getRoomNumber());
@@ -60,9 +61,9 @@ public class RoomService {
     }
 
     public RoomResponse updateRoom(Long id,RoomCreateRequest request){
-        Room room=roomRepository.findById(id).orElseThrow(()->new RuntimeException("Room Not Found"));
-        Hotel hotel=hotelRepository.findById(request.getHotelId()).orElseThrow(()->new RuntimeException("Hotel Not Found"));
-        RoomType roomType=roomTypeRepository.findById(request.getRoomTypeId()).orElseThrow(()->new RuntimeException("RoomType Not Found"));
+        Room room=roomRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Room Not Found"));
+        Hotel hotel=hotelRepository.findById(request.getHotelId()).orElseThrow(()->new ResourceNotFoundException("Hotel Not Found"));
+        RoomType roomType=roomTypeRepository.findById(request.getRoomTypeId()).orElseThrow(()->new ResourceNotFoundException("RoomType Not Found"));
 
         OffsetDateTime now=OffsetDateTime.now();
         room.setHotel(hotel);
@@ -75,7 +76,7 @@ public class RoomService {
         return toRoomResponse(updatedRoom);
     }
     public void deleteRoom(Long id){
-        Room room=roomRepository.findById(id).orElseThrow(()->new RuntimeException("Room Not Found"));
+        Room room=roomRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Room Not Found"));
         roomRepository.delete(room);
     }
 
