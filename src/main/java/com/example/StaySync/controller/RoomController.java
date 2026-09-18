@@ -2,10 +2,12 @@ package com.example.StaySync.controller;
 
 import com.example.StaySync.dto.RoomCreateRequest;
 import com.example.StaySync.dto.RoomResponse;
+import com.example.StaySync.response.ApiResponse;
 import com.example.StaySync.service.RoomService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @RestController
@@ -20,23 +22,37 @@ public class RoomController {
     }
 
 @GetMapping
-    public List<RoomResponse> getAllRooms(){
-        return roomService.getAllRooms();
+    public ApiResponse<List<RoomResponse>> getAllRooms(){
+        List<RoomResponse> responses= roomService.getAllRooms();
+        return new ApiResponse<>(
+                200,"room fetched successfully",responses,OffsetDateTime.now(),true
+        );
 }
 
 @GetMapping("/{id}")
-    public RoomResponse getRoomById(@PathVariable Long id){
-        return roomService.getRoomById(id);
+    public ApiResponse<RoomResponse> getRoomById(@PathVariable Long id){
+    RoomResponse room = roomService.getRoomById(id);
+    return new ApiResponse<>(
+            200,
+            "Room fetched successfully",
+            room,
+            OffsetDateTime.now(),true);
 }
 
 @PostMapping
-    public RoomResponse createRoom(@Valid @RequestBody RoomCreateRequest request){
-        return roomService.createRoom(request);
+    public ApiResponse<RoomResponse> createRoom(@Valid @RequestBody RoomCreateRequest request){
+        RoomResponse roomResponse= roomService.createRoom(request);
+        return new ApiResponse<>(
+                200,"Room Inserted Successfully",roomResponse,OffsetDateTime.now(),true
+        );
 }
 
 @PutMapping("/{id}")
-    public RoomResponse updateRoom(@Valid @RequestBody RoomCreateRequest request,@PathVariable Long id) {
-        return roomService.updateRoom(id,request);
+    public ApiResponse<RoomResponse> updateRoom(@Valid @RequestBody RoomCreateRequest request,@PathVariable Long id) {
+        RoomResponse updatedResponse= roomService.updateRoom(id,request);
+        return new ApiResponse<>(
+                200,"Room Updated Succesfully",updatedResponse,OffsetDateTime.now(),true
+        );
 }
 @DeleteMapping("/{id}")
     public void deleteRoom(@PathVariable Long id){
