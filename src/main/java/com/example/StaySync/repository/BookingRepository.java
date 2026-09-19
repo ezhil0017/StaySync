@@ -24,6 +24,5 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
             @Param("checkIn") OffsetDateTime checkIn,
             @Param("checkOut") OffsetDateTime checkOut,
             @Param("cancelledStatus")BookingStatus cancelledStatus
-
             );
 }
