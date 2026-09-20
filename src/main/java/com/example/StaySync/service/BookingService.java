@@ -10,7 +10,9 @@ import com.example.StaySync.repository.BookingRepository;
 import com.example.StaySync.repository.GuestRepository;
 import com.example.StaySync.repository.RoomRepository;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class BookingService {
     private BookingRepository bookingRepository;
@@ -38,5 +40,15 @@ public class BookingService {
         throw new RoomNotAvailableException("Room Not Available for Booking");
     }
     }
+    public BigDecimal calculateBookingPrice(Room room,OffsetDateTime checkIn,OffsetDateTime checkOut){
+        long numberOfNights= ChronoUnit.DAYS.between(
+                checkIn.toLocalDate(),
+                checkOut.toLocalDate()
+        );
+        BigDecimal basePrice=room.getRoomType().getBasePrice();
+        return basePrice.multiply(BigDecimal.valueOf(numberOfNights));
+    }
+
+
 
 }
