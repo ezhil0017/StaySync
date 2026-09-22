@@ -24,4 +24,14 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse=new ErrorResponse(HttpStatus.BAD_REQUEST.value(),message,OffsetDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
+    @ExceptionHandler(InvalidBookingDateException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidDateException(InvalidBookingDateException exception){
+        ErrorResponse errorResponse=new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage(), OffsetDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+    @ExceptionHandler(RoomNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleRoomNotFoundException(RoomNotFoundException exception){
+        ErrorResponse errorResponse=new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage(),OffsetDateTime.now());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
 }
