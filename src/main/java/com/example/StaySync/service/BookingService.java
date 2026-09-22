@@ -10,6 +10,7 @@ import com.example.StaySync.exception.RoomNotAvailableException;
 import com.example.StaySync.repository.BookingRepository;
 import com.example.StaySync.repository.GuestRepository;
 import com.example.StaySync.repository.RoomRepository;
+import com.example.StaySync.response.BookingResponse;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -51,19 +52,34 @@ public class BookingService {
     }
 
 public Booking createBooking(Guest guest,Room room,OffsetDateTime checkIn,OffsetDateTime checkOut,Integer numberOfGuests,BigDecimal price){
-Booking booking=new Booking();
-booking.setGuest(guest);
-booking.setRoom(room);
-booking.setCheckIn(checkIn);
-booking.setCheckOut(checkOut);
-booking.setPrice(price);
-booking.setNumberOfGuests(numberOfGuests);
-booking.setStatus(BookingStatus.PENDING);
+    Booking booking=new Booking();
+    booking.setGuest(guest);
+    booking.setRoom(room);
+    booking.setCheckIn(checkIn);
+    booking.setCheckOut(checkOut);
+    booking.setPrice(price);
+    booking.setNumberOfGuests(numberOfGuests);
+    booking.setStatus(BookingStatus.PENDING);
 
-OffsetDateTime now=OffsetDateTime.now();
-booking.setCreatedAt(now);
-booking.setUpdatedAt(now);
-return booking;
+    OffsetDateTime now=OffsetDateTime.now();
+    booking.setCreatedAt(now);
+    booking.setUpdatedAt(now);
+    return booking;
 }
 
+public BookingResponse mapToResponse(Booking booking){
+        BookingResponse response=new BookingResponse();
+        response.setBookingId(booking.getBookingId());
+        response.setGuestId(booking.getGuest().getGuestId());
+        response.setRoomId(booking.getRoom().getRoomId());
+        response.setNumberOfGuests(booking.getNumberOfGuests());
+        response.setPrice(booking.getPrice());
+        response.setCheckIn(booking.getCheckIn());
+        response.setCheckOut(booking.getCheckOut());
+        response.setStatus(booking.getStatus());
+        response.setCreatedAt(booking.getCreatedAt());
+        response.setUpdatedAt(booking.getUpdatedAt());
+
+        return response;
+}
 }
