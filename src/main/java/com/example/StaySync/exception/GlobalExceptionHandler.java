@@ -34,4 +34,10 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse=new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage(),OffsetDateTime.now());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
+
+    @ExceptionHandler(RoomNotAvailableException.class)
+    public ResponseEntity<ErrorResponse> handleRoomNotAvailableException(RoomNotAvailableException exception){
+        ErrorResponse errorResponse=new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage(),OffsetDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
 }
