@@ -1,5 +1,6 @@
 package com.example.StaySync.service;
 
+import com.example.StaySync.entity.Booking;
 import com.example.StaySync.entity.Guest;
 import com.example.StaySync.entity.Room;
 import com.example.StaySync.enums.BookingStatus;
@@ -49,6 +50,20 @@ public class BookingService {
         return basePrice.multiply(BigDecimal.valueOf(numberOfNights));
     }
 
+public Booking createBooking(Guest guest,Room room,OffsetDateTime checkIn,OffsetDateTime checkOut,Integer numberOfGuests,BigDecimal price){
+Booking booking=new Booking();
+booking.setGuest(guest);
+booking.setRoom(room);
+booking.setCheckIn(checkIn);
+booking.setCheckOut(checkOut);
+booking.setPrice(price);
+booking.setNumberOfGuests(numberOfGuests);
+booking.setStatus(BookingStatus.PENDING);
 
+OffsetDateTime now=OffsetDateTime.now();
+booking.setCreatedAt(now);
+booking.setUpdatedAt(now);
+return booking;
+}
 
 }

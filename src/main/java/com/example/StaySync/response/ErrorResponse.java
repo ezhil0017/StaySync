@@ -1,4 +1,4 @@
-package com.example.StaySync.exception;
+package com.example.StaySync.response;
 
 import java.time.OffsetDateTime;
 
