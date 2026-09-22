@@ -14,7 +14,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
             select count(b) > 0
             from Booking b
             where b.room.roomId = :roomId
-            and b.status <> :cencelledStatus
+            and b.status <> :cancelledStatus
             and b.checkIn < :checkOut
             and b.checkOut >:checkIn
             """)

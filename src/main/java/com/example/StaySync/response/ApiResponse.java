@@ -17,6 +17,10 @@ public class ApiResponse <T>{
         this.success = success;
     }
 
+    public ApiResponse() {
+
+    }
+
     public int getStatus() {
         return status;
     }

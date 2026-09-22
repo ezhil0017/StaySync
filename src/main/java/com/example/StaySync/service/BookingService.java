@@ -1,25 +1,26 @@
 package com.example.StaySync.service;
 
+import com.example.StaySync.dto.CreateBookingRequest;
 import com.example.StaySync.entity.Booking;
 import com.example.StaySync.entity.Guest;
 import com.example.StaySync.entity.Room;
 import com.example.StaySync.enums.BookingStatus;
-import com.example.StaySync.exception.GuestNotFoundException;
-import com.example.StaySync.exception.ResourceNotFoundException;
-import com.example.StaySync.exception.RoomNotAvailableException;
+import com.example.StaySync.exception.*;
 import com.example.StaySync.repository.BookingRepository;
 import com.example.StaySync.repository.GuestRepository;
 import com.example.StaySync.repository.RoomRepository;
 import com.example.StaySync.response.BookingResponse;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 
+@Service
 public class BookingService {
-    private BookingRepository bookingRepository;
-    private GuestRepository guestRepository;
-    private RoomRepository roomRepository;
+    private final BookingRepository bookingRepository;
+    private final GuestRepository guestRepository;
+    private final  RoomRepository roomRepository;
 
 
     public BookingService(BookingRepository bookingRepository, GuestRepository guestRepository, RoomRepository roomRepository) {
@@ -32,15 +33,17 @@ public class BookingService {
         return guestRepository.findById(guestId).orElseThrow(()->new GuestNotFoundException("Guest Not Found"));
     }
 
-    public Room findRoom(Long roomId){
-        return roomRepository.findById(roomId).orElseThrow(()-> new ResourceNotFoundException("Room not available"));
-    }
     public void checkRoomAvailability(Long roomId, OffsetDateTime checkIn, OffsetDateTime checkOut)
     {
         boolean isAlreadyBooked=bookingRepository.existsOverlappingBooking(roomId,checkIn,checkOut, BookingStatus.CANCELLED);
     if(isAlreadyBooked){
         throw new RoomNotAvailableException("Room Not Available for Booking");
     }
+    }
+    public void validateDates(OffsetDateTime checkIn,OffsetDateTime checkOut){
+        if(!checkOut.isAfter(checkIn)){
+            throw new InvalidBookingDateException();
+        }
     }
     public BigDecimal calculateBookingPrice(Room room,OffsetDateTime checkIn,OffsetDateTime checkOut){
         long numberOfNights= ChronoUnit.DAYS.between(
@@ -50,8 +53,33 @@ public class BookingService {
         BigDecimal basePrice=room.getRoomType().getBasePrice();
         return basePrice.multiply(BigDecimal.valueOf(numberOfNights));
     }
+    public Room findRoomType(Long roomId){
+        return roomRepository.findRoomWithRoomTypeById(roomId).orElseThrow(()->  new RoomNotFoundException(roomId));
+    }
+public BookingResponse createBooking(CreateBookingRequest request){
+        // 1.validate dates
+        validateDates(request.getCheckIn(),request.getCheckOut());
+    //2. Find guest
+    Guest guest=findGuest(request.getGuestId());
 
-public Booking createBooking(Guest guest,Room room,OffsetDateTime checkIn,OffsetDateTime checkOut,Integer numberOfGuests,BigDecimal price){
+    // 3. find room
+    Room room=findRoomType(request.getRoomId());
+
+    // 4. checkRoom Availability
+    checkRoomAvailability(room.getRoomId(), request.getCheckIn(),request.getCheckOut());
+
+    // 5. calcualte price
+    BigDecimal price=calculateBookingPrice(room,request.getCheckIn(),request.getCheckOut());
+
+    // 6. create booking entity
+    Booking booking=buildBooking(guest,room,request.getCheckIn(),request.getCheckOut(), request.getNumberOfGuests(), price);
+
+    // 7. save booking
+    Booking savedBooking=saveBooking(booking);
+    // 8. conver entity to response DTO
+    return mapToResponse(savedBooking);
+}
+public Booking buildBooking(Guest guest,Room room,OffsetDateTime checkIn,OffsetDateTime checkOut,Integer numberOfGuests,BigDecimal price){
     Booking booking=new Booking();
     booking.setGuest(guest);
     booking.setRoom(room);
@@ -67,6 +95,11 @@ public Booking createBooking(Guest guest,Room room,OffsetDateTime checkIn,Offset
     return booking;
 }
 
+public Booking saveBooking(Booking booking){
+
+    Booking savedBooking=bookingRepository.save(booking);
+        return savedBooking;
+}
 public BookingResponse mapToResponse(Booking booking){
         BookingResponse response=new BookingResponse();
         response.setBookingId(booking.getBookingId());
