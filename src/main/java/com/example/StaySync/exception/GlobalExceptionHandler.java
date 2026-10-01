@@ -17,7 +17,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public  ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException exception){
         String message=exception.getBindingResult().getFieldErrors().stream().map(error->error.getField()+ ":" +error.getDefaultMessage()).findFirst().orElse("Validation Failed");
