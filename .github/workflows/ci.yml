@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+
   pull_request:
     branches:
       - master
@@ -15,12 +16,15 @@ jobs:
     services:
       postgres:
         image: postgres:16
+
         env:
           POSTGRES_DB: hotel_management
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: Ezhil@123
+          POSTGRES_PASSWORD: postgres
+
         ports:
           - 5432:5432
+
         options: >-
           --health-cmd "pg_isready -U postgres -d hotel_management"
           --health-interval 10s
@@ -28,6 +32,7 @@ jobs:
           --health-retries 5
 
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -48,12 +53,10 @@ jobs:
           DB_PASSWORD: postgres
         run: ./mvnw test
 
+      - name: SonarCloud Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./mvnw sonar:sonar
+
       - name: Package application
         run: ./mvnw package -DskipTests
-
-      - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: StaySync-jar
-          path: target/*.jar
-
